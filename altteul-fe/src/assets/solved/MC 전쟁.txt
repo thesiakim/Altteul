@@ -1,0 +1,67 @@
+####
+Altteul
+###
+import heapq
+from collections import defaultdict
+
+def dijkstra(n, graph, start):
+    INF = float('inf')
+    dist = [INF] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)] 
+
+    while pq:
+        current_dist, node = heapq.heappop(pq)
+
+        if current_dist > dist[node]:
+            continue
+
+        for neighbor, weight in graph[node]:
+            new_dist = current_dist + weight
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+                heapq.heappush(pq, (new_dist, neighbor))
+
+    return dist
+
+def find_max_shortest_path():
+    N, M = map(int, input().split())
+
+    graph = defaultdict(list)
+    edges = []
+
+    for _ in range(M):
+        x, y, z = map(int, input().split())
+        graph[x].append((y, z))
+        graph[y].append((x, z))
+        edges.append((x, y, z))  
+
+    dist_from_start = dijkstra(N, graph, 1)
+    original_shortest_path = dist_from_start[N]
+
+    dist_from_end = dijkstra(N, graph, N)
+
+    shortest_path_edges = []
+
+    for x, y, z in edges:
+        if dist_from_start[x] + z + dist_from_end[y] == original_shortest_path or \
+                dist_from_start[y] + z + dist_from_end[x] == original_shortest_path:
+            shortest_path_edges.append((x, y, z))
+
+    max_shortest_path = original_shortest_path
+
+    for x, y, z in shortest_path_edges:
+        graph[x].remove((y, z))
+        graph[y].remove((x, z))
+
+        new_shortest_path = dijkstra(N, graph, 1)[N]  
+
+        if new_shortest_path != float('inf'): 
+            max_shortest_path = max(max_shortest_path, new_shortest_path)
+
+        graph[x].append((y, z))
+        graph[y].append((x, z))
+
+    print(max_shortest_path)
+
+find_max_shortest_path()

@@ -1,0 +1,40 @@
+####
+Altteul
+###
+def count_street_lamps():
+    N, M, K = map(int, input().split())
+
+    subway_map = {}
+
+    for _ in range(K):
+        r, c1, c2 = map(int, input().split())
+
+        if r not in subway_map:
+            subway_map[r] = []
+        subway_map[r].append((c1, c2))
+
+    occupied_count = 0
+
+    for row in subway_map:
+        intervals = sorted(subway_map[row])
+        merged_intervals = []
+
+        start, end = intervals[0]
+        for i in range(1, len(intervals)):
+            c1, c2 = intervals[i]
+            if c1 <= end + 1:
+                end = max(end, c2)
+            else:
+                merged_intervals.append((start, end))
+                start, end = c1, c2
+        merged_intervals.append((start, end))
+
+        for s, e in merged_intervals:
+            occupied_count += (e - s + 1)
+
+    total_cells = N * M
+    street_lamps = total_cells - occupied_count
+
+    print(street_lamps)
+
+count_street_lamps()

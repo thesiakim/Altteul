@@ -1,0 +1,17 @@
+# Git 관련 파일 제외
+.git
+.gitignore
+
+# 빌드 결과 제외
+build/
+dist/
+.gradle/
+
+# IDE 설정 제외
+*.iml
+.idea/
+
+# 기타 불필요한 파일
+node_modules/
+*.log
+resources/judge/data/judge_server/run/run

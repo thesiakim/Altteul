@@ -1,0 +1,157 @@
+// 개인전
+export const gameRecordData = {
+  status: 200,
+  message: 'ok',
+  data: {
+    key: [
+      {
+        problem: {
+          problemId: 12345,
+          problemTitle: '뭐시기',
+          description: '문제 내용이다.',
+        },
+        gameType: 'S',
+        startedAt: '2025.01.25 13:50',
+        totalHeadCount: 8,
+        items: [
+          { itemId: 2, itemName: 'asdf' },
+          { itemId: 3, itemName: 'asdf' },
+          { itemId: 4, itemName: 'asdf' },
+          { itemId: 5, itemName: 'asdf' },
+        ],
+        myTeam: {
+          gameResult: 1,
+          lang: 'JV',
+          totalHeadCount: 1,
+          executeTime: 3000,
+          executeMemory: 1234,
+          bonusPoint: 50,
+          duration: '42분 51초',
+          code: 'myCode',
+          members: [
+            {
+              userId: 12,
+              nickname: 'abc2',
+              profileImage: '이미지Byte',
+              rank: 1,
+            },
+          ],
+        },
+        opponents: [
+          {
+            gameResult: 2,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+          {
+            gameResult: 3,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+          {
+            gameResult: 4,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+          {
+            gameResult: 5,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+          {
+            gameResult: 6,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+          {
+            gameResult: 7,
+            lang: 'JV',
+            totalHeadCount: 1,
+            executeTime: 3000,
+            executeMemory: 1234,
+            bonusPoint: 50,
+            duration: '52분 22초',
+            code: 'opponentCode',
+            members: [
+              {
+                userId: 12,
+                nickname: 'abc2',
+                profileImage: '이미지Byte',
+                rank: 13,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    isLast: true,
+    totalPages: 0,
+    currentPage: 0,
+    totalElements: 0,
+  },
+};

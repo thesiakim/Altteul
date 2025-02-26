@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: dev-openvidu
+#openvidu:
+#  url: ${DOMAIN_OR_PUBLIC_IP}
+#  secret: ${OPENVIDU_SECRET}
+livekit:
+  api:
+    key: ${LIVEKIT_API_KEY}
+    secret: ${LIVEKIT_API_SECRET}

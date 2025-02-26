@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Pretendard Variable';
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/PretendardVariable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Firacode';
+  src: url('/fonts/FiraCode-VF.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Press Start 2P';
+  /* font-weight: 400;
+  font-style: normal;
+  font-display: swap; */
+  src: url('/fonts/PressStart2P-Regular.woff2') format('woff2');
+}
+
+@layer base {
+  html,
+  body {
+    font-family: 'Pretendard Variable', sans-serif;
+    @apply text-primary-white bg-primary-black h-[100vh];
+  }
+}
+
+html::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html::-webkit-scrollbar-thumb {
+  height: 30%;
+  background-color: #5c6269;
+  border-radius: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background-color: #242a32;
+}
+
+/* 모나코 에디터 설정 */
+.monaco-editor,
+.monaco-editor .overflow-guard,
+.view-lines .monaco-editor.no-user-select,
+.lines-content,
+.monaco-editor.no-user-select,
+.monaco-editor.no-user-select,
+.margin-view-overlays {
+  background-color: #242a32 !important;
+}
+
+.monaco-mouse-cursor-text {
+  position: inherit;
+}
+
+/* 드롭다운 마지막 요소 border 지우기 */
+.dropdown-last:last-child {
+  border: 0;
+}
+
+.Toastify__toast--info {
+  background: #242a32;
+  border: #e06c2d;
+  border-color: #e06c2d;
+}

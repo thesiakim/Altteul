@@ -1,0 +1,63 @@
+####
+Altteul
+###
+from collections import deque
+
+DIRECTION_MAP = {
+    1: (0, 1),   
+    2: (0, -1),  
+    3: (1, 0),   
+    4: (-1, 0)   
+}
+
+def bfs(N, M, warehouse, start, goal):
+    sr, sc, sd = start
+    gr, gc, gd = goal
+
+    visited = [[[False] * 5 for _ in range(M)] for _ in range(N)]
+    queue = deque([(sr-1, sc-1, sd, 0)]) 
+
+    visited[sr-1][sc-1][sd] = True
+
+    while queue:
+        r, c, d, commands = queue.popleft()
+
+        if (r, c, d) == (gr-1, gc-1, gd):
+            return commands
+
+        dr, dc = DIRECTION_MAP[d]
+        for i in range(1, 4):
+            nr, nc = r + dr * i, c + dc * i
+
+            if not (0 <= nr < N and 0 <= nc < M):
+                break
+
+            if warehouse[nr][nc] == 1:
+                break
+
+            if not visited[nr][nc][d]:
+                visited[nr][nc][d] = True
+                queue.append((nr, nc, d, commands + 1))
+
+        left_direction = {1: 4, 2: 3, 3: 1, 4: 2}[d]
+        if not visited[r][c][left_direction]:
+            visited[r][c][left_direction] = True
+            queue.append((r, c, left_direction, commands + 1))
+
+        right_direction = {1: 3, 2: 4, 3: 2, 4: 1}[d]
+        if not visited[r][c][right_direction]:
+            visited[r][c][right_direction] = True
+            queue.append((r, c, right_direction, commands + 1))
+
+    return -1  
+
+
+N, M = map(int, input().split()) 
+
+warehouse = []
+for _ in range(N):
+    warehouse.append(list(map(int, input().split())))
+
+sr, sc, sd = map(int, input().split())
+gr, gc, gd = map(int, input().split())
+print(bfs(N, M, warehouse, (sr, sc, sd), (gr, gc, gd)))

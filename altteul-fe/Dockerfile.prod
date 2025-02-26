@@ -1,0 +1,35 @@
+# Production Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install yarn and enable corepack
+RUN corepack enable
+
+# Copy configuration files first
+COPY package.json yarn.lock .yarnrc.yml ./
+
+# Clean install dependencies
+RUN yarn install
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the application
+RUN yarn build
+
+# Production stage
+FROM nginx:alpine
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY ./nginx/nginx.prod.conf /etc/nginx/conf.d/nginx.conf
+
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose port 7080
+EXPOSE 7080
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

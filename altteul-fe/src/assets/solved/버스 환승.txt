@@ -1,0 +1,66 @@
+####
+Altteul
+###
+from collections import deque, defaultdict
+
+def bfs(start_buses, target_buses, bus_connections):
+    queue = deque()
+    visited = set()
+
+    for bus in start_buses:
+        queue.append((bus, 1))
+        visited.add(bus)
+
+    while queue:
+        bus, transfers = queue.popleft()
+
+        if bus in target_buses:
+            return transfers
+
+        for next_bus in bus_connections[bus]:
+            if next_bus not in visited:
+                visited.add(next_bus)
+                queue.append((next_bus, transfers + 1))
+
+    return -1
+
+def find_min_transfers():
+    m, n = map(int, input().split())
+    k = int(input())
+
+    bus_graph = defaultdict(set)
+
+    station_to_buses = defaultdict(set)
+
+    for _ in range(k):
+        bus_id, x1, y1, x2, y2 = map(int, input().split())
+
+        if x1 == x2:
+            for y in range(min(y1, y2), max(y1, y2) + 1):
+                bus_graph[bus_id].add((x1, y))
+                station_to_buses[(x1, y)].add(bus_id)
+        else:
+            for x in range(min(x1, x2), max(x1, x2) + 1):
+                bus_graph[bus_id].add((x, y1))
+                station_to_buses[(x, y1)].add(bus_id)
+
+    sx, sy, dx, dy = map(int, input().split())
+    start_buses = station_to_buses.get((sx, sy), set())
+    target_buses = station_to_buses.get((dx, dy), set())
+
+    if not start_buses or not target_buses:
+        print(-1)
+        return
+
+    bus_connections = defaultdict(set)
+
+    for station, buses in station_to_buses.items():
+        bus_list = list(buses)
+        for i in range(len(bus_list)):
+            for j in range(i + 1, len(bus_list)):
+                bus_connections[bus_list[i]].add(bus_list[j])
+                bus_connections[bus_list[j]].add(bus_list[i])
+
+    print(bfs(start_buses, target_buses, bus_connections))
+
+find_min_transfers()

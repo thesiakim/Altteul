@@ -1,0 +1,5 @@
+node_modules
+.idea
+resources/*
+.env
+altteul-fe/yarn.lock

@@ -1,0 +1,120 @@
+services:
+  frontend:
+    container_name: altteul-ie-frontend
+    build:
+      context: ./altteul-fe
+      dockerfile: Dockerfile.prod
+    ports:
+      - "7080:7080"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - backend
+    networks: # 이 부분 추가
+      - altteul-ie-network  # backend와 같은 네트워크 사용
+
+  backend:
+    container_name: altteul-ie-backend
+    restart: always
+    build:
+      context: ./altteul-be
+      dockerfile: dockerfile.be
+    working_dir: /app
+    ports:
+      - "8081:8080"
+    volumes:
+      - gradle_cache:/home/gradle/.gradle
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    command: java -jar app.jar
+    networks: #사용할 네트워크 지정
+      - altteul-ie-network
+    depends_on:
+      - mysql
+      - mongodb
+      - redis
+    env_file:
+      - ./altteul-be/.env
+
+  mysql:
+    env_file:
+      - ./altteul-be/.env
+    container_name: altteul-ie-mysql
+    image: mysql/mysql-server:8.0.27
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=Asia/Seoul
+    command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
+    ports:
+      - "13306:3306"
+    volumes: #볼륨 지정
+      - ./${MYSQL_VOLUME}:/var/lib/mysql
+    networks: #사용할 네트워크 지정
+      - altteul-ie-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: altteul-ie-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=altteul
+
+  redis:
+    env_file:
+      - ./altteul-be/.env
+    container_name: altteul-ie-redis
+    image: redis:6.2.6-alpine
+    ports: # 바인딩할 포트:내부 포트
+      - ${REDIS_BINDING_PORT}:${REDIS_PORT}
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes: # 마운트할 볼륨 설정
+      - ${REDIS_DATA_PATH}:/data
+      - ./${REDIS_DEFAULT_CONFIG_FILE}:/usr/local/etc/redis/redis.conf
+    restart: always
+    networks: #사용할 네트워크 지정
+      - altteul-ie-network
+
+  judge:
+    image: registry.cn-hongkong.aliyuncs.com/oj-image/judge:1.6.1
+    container_name: altteul-ie-judge
+    restart: always
+    ports:
+      - "9999:8080"
+    cap_drop:
+      - SETPCAP
+      - MKNOD
+      - NET_BIND_SERVICE
+      - SYS_CHROOT
+      - SETFCAP
+      - FSETID
+    tmpfs:
+      - /tmp
+    volumes:
+      - ${PROD_TESTCASE_ROOT}:/test_case:ro
+      - ./resources/judge/data/judge_server/log:/log
+      - ./resources/judge/data/judge_server/run:/judger
+    environment:
+      - SERVICE_URL=${PROD_JUDGE_SERVER_URL}
+      - BACKEND_URL=${PROD_SERVER_URL}/api/judge/check
+      - TOKEN=${SECRET_KEY}
+    networks: #사용할 네트워크 지정
+      - altteul-ie-network
+
+volumes:
+  mysql_dev_data:
+  mongodb_dev_data:
+  redis_dev_data:
+  gradle_cache:
+
+networks:
+  altteul-ie-network:
+    driver: bridge

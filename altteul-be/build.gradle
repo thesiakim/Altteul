@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.c203'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    //implementation 'org.springframework.boot:spring-boot-starter-messaging'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+
+    // AWS 의존성 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'software.amazon.awssdk:s3:2.19.1'
+
+    // Querydsl 의존성 추가
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+
+    // Redisson 의존성 추가
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.4'
+
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT'
+    // https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-openai
+    implementation 'org.springframework.ai:spring-ai-openai:1.0.0-M6'
+
+
+// https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-weaviate-store
+//    implementation 'org.springframework.ai:spring-ai-weaviate-store:1.0.0-M5'
+
+
+//    implementation 'io.openvidu:openvidu-java-client:2.31.0'
+
+    // https://mvnrepository.com/artifact/io.livekit/livekit-server
+    implementation 'io.livekit:livekit-server:0.8.4'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+def generated = 'src/main/generated'
+
+//Querydsl Q Class 생성 위치 지정
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+//java source set 에 Querydsl Q Class 위치 추가
+sourceSets {
+    main.java.srcDirs += [generated]
+}
+
+//gradle clean 시, Q Class 디렉토리까지 삭제하도록 설정
+clean {
+    delete file(generated)
+}
+
+//dependencyManagement {
+//    imports {
+//        mavenBom "org.springframework.ai:spring-ai-bom:1.0.0-M1"
+//    }
+//}

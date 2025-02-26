@@ -1,0 +1,25 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    group:
+      dev:
+        - dev-mysql
+        - dev-token
+        - dev-redis
+        - dev-oauth
+        - dev-judge
+        - dev-batch
+        - dev-openvidu
+        - dev-aws
+      prod:
+        - prod-mysql
+        - prod-token
+        - prod-redis
+        - prod-oauth
+        - prod-judge
+        - prod-batch
+        - prod-openvidu
+        - prod-aws
+    active: ${SPRING_PROFILES_ACTIVE}
+open-api-key: ${OPEN_AI_SECRET_KEY}

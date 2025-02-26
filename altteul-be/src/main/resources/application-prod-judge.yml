@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: prod-judge
+judge:
+  server:
+    url: ${PROD_JUDGE_SERVER_URL}
+    key: ${JUDGE_KEY}

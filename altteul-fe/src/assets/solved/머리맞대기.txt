@@ -1,0 +1,41 @@
+####
+Altteul
+###
+def min_max_head_sum(N, T, brain_speeds):
+    extended_speeds = brain_speeds * 2
+
+    def is_possible(max_sum):
+        for start in range(N):  
+            count = 1  
+            current_sum = 0  
+            for i in range(start, start + N):  
+                if current_sum + extended_speeds[i] > max_sum:
+                    count += 1  
+                    current_sum = 0
+                current_sum += extended_speeds[i]
+
+                if count > T:
+                    break  
+
+            if count <= T:
+                return True  
+
+        return False  
+
+    low, high = max(brain_speeds), sum(brain_speeds)
+    result = high  
+
+    while low <= high:
+        mid = (low + high) // 2
+        if is_possible(mid):
+            result = mid
+            high = mid - 1  
+        else:
+            low = mid + 1  
+
+    return result
+
+N, T = map(int, input().split())
+brain_speeds = list(map(int, input().split()))
+
+print(min_max_head_sum(N, T, brain_speeds))

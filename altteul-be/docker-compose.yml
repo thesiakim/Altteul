@@ -1,0 +1,85 @@
+services:
+  mysql:
+    env_file:
+      - .env
+    container_name: altteul-mysql
+    image: mysql/mysql-server:8.0.27
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=Asia/Seoul
+    command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--lower_case_table_names=1", "--max_connections=2048", "--wait_timeout=3600" ]
+    ports:
+      - "13306:3306"
+    volumes: #볼륨 지정
+      - ${MYSQL_INIT_VOLUME}:/docker-entrypoint-initdb.d
+      - ${MYSQL_VOLUME}:/var/lib/mysql
+    networks: #사용할 네트워크 지정
+      - altteul-network
+
+  redis:
+    env_file:
+      - .env
+    container_name: altteul-redis
+    image: redis:6.2.6-alpine
+    ports: # 바인딩할 포트:내부 포트
+      - ${REDIS_BINDING_PORT}:${REDIS_PORT}
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - TZ=Asia/Seoul
+    volumes: # 마운트할 볼륨 설정
+      - ${REDIS_DATA_PATH}:/data
+      - ${REDIS_DEFAULT_CONFIG_FILE}:/usr/local/etc/redis/redis.conf
+    restart: always
+    networks: #사용할 네트워크 지정
+      - altteul-network
+  judge:
+    image: registry.cn-hongkong.aliyuncs.com/oj-image/judge:1.6.1
+    container_name: altteul-judge
+    restart: always
+    ports:
+      - "9999:8080"
+    cap_drop:
+      - SETPCAP
+      - MKNOD
+      - NET_BIND_SERVICE
+      - SYS_CHROOT
+      - SETFCAP
+      - FSETID
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./resources/judge/data/backend/test_case:/test_case:ro
+      - ./resources/judge/data/judge_server/log:/log
+      - ./resources/judge/data/judge_server/run:/judger
+    environment:
+      - SERVICE_URL=${PROD_JUDGE_SERVER_URL}
+      - BACKEND_URL=http://host.docker.internal:8080/api/judge/check
+      - TOKEN=${SECRET_KEY}
+    entrypoint: [ "/bin/sh", "-c", "exec /app/entrypoint.sh" ]
+
+  #  backend:
+  #    env_file:
+  #      - .env
+  #    container_name: altteul-server
+  #    depends_on:
+  #      - mysql
+  #      - redis
+  #    restart: always
+  #    build:
+  #      context: .
+  #      dockerfile: dockerfile.be
+  #    ports:
+  #      - "8080:8080"
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: dev
+  #    volumes:
+  #      - ./:/app
+  #    command: ["./gradlew", "bootRun"]
+  #    networks:
+  #      - altteul-network
+networks:
+  altteul-network:
+    driver: bridge

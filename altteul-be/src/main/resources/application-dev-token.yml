@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: dev-token
+  jwt:
+    secret: ${SECRET_KEY}
+    expiration: ${JWT_ACCESS_VALID_TIME}
