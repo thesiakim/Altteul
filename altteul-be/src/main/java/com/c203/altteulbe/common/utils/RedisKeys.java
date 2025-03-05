@@ -110,4 +110,8 @@ public class RedisKeys {
 		return ROOM_REDIS_ID + ":" + roomId;
 	}
 
+	// 연결 해제 대기 상태 키
+	public static String getPendingDisconnectKey(Long userId) {
+		return "user:" + userId + ":pending_disconnect";
+	}
 }
